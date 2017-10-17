@@ -1,0 +1,128 @@
+3. Atlikite šiuos veiksmus:
+a) Papildykite autorių lentelę įrašais.
+INSERT INTO Authors (name) VALUES ('John Stockton');
+INSERT INTO Authors (name) VALUES ('Karl Malone');
++----------+-----------------+
+| authorId | name            |
++----------+-----------------+
+|        1 | Chris Smith     |
+|        2 | Steven Levithan |
+|        3 |  Jan Goyvaerts  |
+|        4 | Ryan Benedetti  |
+|        5 |  Al Anderson    |
+|        6 | Clay Breshears  |
+|        7 | Kevlin Henney   |
+|        8 | John Stockton   |
+|        9 | Karl Malone     |
++----------+-----------------+
+
+b) Papildykite knygų lentelę, įrašais apie knygas, kurių autorius įrašėte prieš tai.
+INSERT INTO Books (authorId, title, year) VALUES ('8', 'Stocktons book', 2017);
+INSERT INTO Books (authorId, title, year) VALUES ('9', 'Malone book', 2017);
++--------+----------+---------------------------------------------------+------+
+| bookId | authorId | title                                             | year |
++--------+----------+---------------------------------------------------+------+
+|      1 |        1 | Programming F# 3.0, 2nd Edition                   | 2012 |
+|      2 |        2 | Regular Expressions Cookbook, 2nd Edition         | 2012 |
+|      3 |        4 | Head First Networking                             | 2009 |
+|      4 |        6 | The Art of Concurrency                            | 2009 |
+|      5 |        7 | 97 Things Every Programmer Should Know            | 2010 |
+|      6 |     NULL | McCullough and Berglund on Mastering Advanced Git | NULL |
+|      7 |     NULL | Version Control with Git, 2nd Edition             | 2012 |
+|      8 |     NULL | Learning Python, 4th Edition                      | 2009 |
+|      9 |        8 | Stocktons book                                    | 2017 |
+|     10 |        9 | Malone book                                       | 2017 |
++--------+----------+---------------------------------------------------+------+
+
+
+c) Išrinkite knygų informaciją prijungdami autorius iš autorių lentelės.
+SELECT Books.title, Books.year, Authors.name FROM Authors JOIN Books ON Authors.authorId=Books.authorId;
++-------------------------------------------+------+-----------------+
+| title                                     | year | name            |
++-------------------------------------------+------+-----------------+
+| Programming F# 3.0, 2nd Edition           | 2012 | Chris Smith     |
+| Regular Expressions Cookbook, 2nd Edition | 2012 | Steven Levithan |
+| Head First Networking                     | 2009 | Ryan Benedetti  |
+| The Art of Concurrency                    | 2009 | Clay Breshears  |
+| 97 Things Every Programmer Should Know    | 2010 | Kevlin Henney   |
+| Stocktons book                            | 2017 | John Stockton   |
+| Malone book                               | 2017 | Karl Malone     |
++-------------------------------------------+------+-----------------+
+
+
+d) Pakeiskite vienos knygos autorių į kitą.
+UPDATE Books SET authorId='9' WHERE bookId=1;
++-------------------------------------------+------+-----------------+
+| title                                     | year | name            |
++-------------------------------------------+------+-----------------+
+| Programming F# 3.0, 2nd Edition           | 2012 | Karl Malone     |
+| Regular Expressions Cookbook, 2nd Edition | 2012 | Steven Levithan |
+| Head First Networking                     | 2009 | Ryan Benedetti  |
+| The Art of Concurrency                    | 2009 | Clay Breshears  |
+| 97 Things Every Programmer Should Know    | 2010 | Kevlin Henney   |
+| Stocktons book                            | 2017 | John Stockton   |
+| Malone book                               | 2017 | Karl Malone     |
++-------------------------------------------+------+-----------------+
+
+e) Suskaičiuokite kiek knygų kiekvieno autoriaus yra duomenų bazėje (įtraukdami autorius kurie neturi knygų, bei neįtraukdami šių autorių).
+SELECT name, COUNT(bookId) FROM Authors LEFT JOIN Books ON Authors.authorId=Books.authorId GROUP BY Authors.authorId;
++-----------------+---------------+
+| name            | COUNT(bookId) |
++-----------------+---------------+
+| Chris Smith     |             0 |
+| Steven Levithan |             1 |
+|  Jan Goyvaerts  |             0 |
+| Ryan Benedetti  |             1 |
+|  Al Anderson    |             0 |
+| Clay Breshears  |             1 |
+| Kevlin Henney   |             1 |
+| John Stockton   |             1 |
+| Karl Malone     |             2 |
++-----------------+---------------+
+
+
+SELECT name, COUNT(bookId) FROM Authors INNER JOIN Books ON Authors.authorId=Books.authorId GROUP BY Authors.authorId;
++-----------------+---------------+
+| name            | COUNT(bookId) |
++-----------------+---------------+
+| Steven Levithan |             1 |
+| Ryan Benedetti  |             1 |
+| Clay Breshears  |             1 |
+| Kevlin Henney   |             1 |
+| John Stockton   |             1 |
+| Karl Malone     |             2 |
++-----------------+---------------+
+
+f) Pašalinkite jūsų įrašytus autorius. (pagal ID)
+DELETE FROM Authors WHERE authorId>7;
+
+mysql> SELECT * FROM Authors;
++----------+-----------------+
+| authorId | name            |
++----------+-----------------+
+|        1 | Chris Smith     |
+|        2 | Steven Levithan |
+|        3 |  Jan Goyvaerts  |
+|        4 | Ryan Benedetti  |
+|        5 |  Al Anderson    |
+|        6 | Clay Breshears  |
+|        7 | Kevlin Henney   |
++----------+-----------------+
+
+
+g) Pašalinkite knygas, kurios neturi autorių.
+DELETE FROM Books WHERE authorId IS NULL;
+
++--------+----------+-------------------------------------------+------+
+| bookId | authorId | title                                     | year |
++--------+----------+-------------------------------------------+------+
+|      1 |        9 | Programming F# 3.0, 2nd Edition           | 2012 |
+|      2 |        2 | Regular Expressions Cookbook, 2nd Edition | 2012 |
+|      3 |        4 | Head First Networking                     | 2009 |
+|      4 |        6 | The Art of Concurrency                    | 2009 |
+|      5 |        7 | 97 Things Every Programmer Should Know    | 2010 |
+|      9 |        8 | Stocktons book                            | 2017 |
+|     10 |        9 | Malone book                               | 2017 |
++--------+----------+-------------------------------------------+------+
+
+
